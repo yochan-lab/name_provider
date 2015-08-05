@@ -1,4 +1,4 @@
-std_msgs/Int32 id
+int32 id
 ---
-std_msgs/String name
-std_msgs/Bool found_name
+string name
+bool found_name
