@@ -48,6 +48,8 @@ def handle_create_new_person(req):
 	for p in population:
 	    if p._person.id = req.id
 		p._person.name = req.name
+		break
+	return True
     elif req.name != "":
 	population.append(Human(req.name, req.id))
 	return True
