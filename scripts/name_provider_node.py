@@ -29,7 +29,8 @@ def handle_get_real_name(req):
 
     for p in population:
         if p._person.id == req.id:
-            is_known_person = True
+            print p._person.id, " ", req.id, " ", p._person.id == req.id
+	    is_known_person = True
             nombre = p._person.name
             break
 
@@ -42,7 +43,12 @@ def handle_get_real_name(req):
 
 
 def handle_create_new_person(req):
-    if req.name != "":
+    id_exists = False
+    if True:
+	for p in population:
+	    if p._person.id = req.id
+		p._person.name = req.name
+    elif req.name != "":
 	population.append(Human(req.name, req.id))
 	return True
     else:
