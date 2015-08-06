@@ -46,7 +46,7 @@ def handle_create_new_person(req):
     id_exists = False
     if True:
 	for p in population:
-	    if p._person.id = req.id
+	    if p._person.id == req.id:
 		p._person.name = req.name
 		break
 	return True
