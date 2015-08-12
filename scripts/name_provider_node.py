@@ -22,31 +22,14 @@ class Human(object):
 
     def __str__(self):
         return "<Human: %s, %d>" % (self._person.name, self._person.id)
-        #add to rosplan
-pop_file = '/home/yochan/names.pickle'
-population = {}
-if os.path.isfile(pop_file):
-    with open(pop_file, 'r') as file:
-	population = pickle.load(file)
+        
+    def get_message(self):
+	return self._person
 
+population = {}
 
 def handle_get_real_name(req):
-#    is_known_person = False
-#    nombre = ""
-    rospy.loginfo("Called name db %s" % str(req.id)) 
-
-#     for p in population:
-#         if p._person.id == req.id:
-#             rospy.loginfo("%s %s %s" % ( str(p._person.id), str(req.id) , str(p._person.id == req.id)))
-# 	    is_known_person = True
-#             nombre = p._person.name
-#             break
-
     if req.id in population:
-	rospy.loginfo("surprise nom nom: %s" % str(population[req.id]._person.name))
-	for keys, values in population.iteritems():
-	    rospy.loginfo("key %s" % str(keys))
-	    rospy.loginfo("value %s" % str(values))
         return {"name": population[req.id]._person.name,
                 "found_name": True}
     else:
@@ -55,24 +38,30 @@ def handle_get_real_name(req):
 
 
 def handle_create_new_person(req):
-#     if req.id in population:
-# 	for p in population:
-# 	    if p._person.id == req.id:
-# 		p._person.name = req.name
-# 		break
-# 	return True
     if req.name != "":
 	rospy.loginfo("Creating %s with id %s" % (str(req.name) ,str(req.id)))
-	population[req.id] = Human(req.name, req.id)
+	human = Human(req.name, req.id)
+	population[req.id] = human
 	with open(pop_file, 'w') as file:
 	    pickle.dump(population, file)
+	interface.add_instance('person', human._person.name, human) 
 	return True
     else:
 	return False
 
+
 if __name__ == '__main__':
     rospy.init_node("name_provider_node")
-    # interface.init()
+    interface.init()
+
+    pop_file = '/home/yochan/names.pickle'
+    if os.path.isfile(pop_file):
+	with open(pop_file, 'r') as file:
+	    population = pickle.load(file)
+
+    for key in population:
+	h = population[key]
+	interface.add_instance('person', h._person.name, h) 
 
     get_name_service = rospy.Service("get_real_name", GetRealName, handle_get_real_name)
     get_name_service = rospy.Service("create_new_person", CreateNewPerson, handle_create_new_person)
